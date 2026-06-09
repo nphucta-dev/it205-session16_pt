@@ -1,235 +1,611 @@
+'''
+PHÂN TÍCH & THIẾT KẾ HỆ THỐNG
+
+1. MỤC TIÊU HỆ THỐNG
+- Quản lý hồ sơ bệnh án bằng List chứa String.
+- Chuẩn hóa dữ liệu đầu vào bằng các hàm xử lý chuỗi.
+- Tách nhỏ nghiệp vụ thành nhiều Function độc lập.
+- Cập nhật dữ liệu bệnh nhân an toàn.
+- Phân loại bệnh nhân theo độ tuổi.
+
+2. CẤU TRÚC DỮ LIỆU
+
+Mỗi hồ sơ bệnh nhân được lưu dưới dạng:
+"MãBN-TênBN-NămSinh-ChẩnĐoán"
+
+Ví dụ:
+"BN001-Nguyen Van A-1985-Viem Phoi"
+
+Danh sách lưu trữ:
+patient_records = [
+    "BN001-Nguyen Van A-1985-Viem Phoi"
+]
+
+3. THIẾT KẾ HÀM
+
+--------------------------------------------------
+Tên hàm:
+split_record(record)
+
+Input:
+- record (str)
+
+Output:
+- list
+
+Mô tả xử lý:
+- Dùng split("-")
+- Tách hồ sơ thành 4 phần
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+display_records(records)
+
+Input:
+- records (list)
+
+Output:
+- None
+
+Mô tả xử lý:
+- Kiểm tra danh sách rỗng
+- Duyệt từng hồ sơ
+- split("-") để lấy thông tin
+- In dữ liệu dạng bảng căn lề
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+normalize_patient_id(patient_id)
+
+Input:
+- patient_id (str)
+
+Output:
+- str
+
+Mô tả xử lý:
+- strip()
+- upper()
+- replace(" ", "")
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+normalize_name(name)
+
+Input:
+- name (str)
+
+Output:
+- str
+
+Mô tả xử lý:
+- replace("-", " ")
+- title()
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+normalize_diagnosis(diagnosis)
+
+Input:
+- diagnosis (str)
+
+Output:
+- str
+
+Mô tả xử lý:
+- replace("-", " ")
+- capitalize()
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+is_valid_birth_year(year)
+
+Input:
+- year (str)
+
+Output:
+- bool
+
+Mô tả xử lý:
+- Kiểm tra isdigit()
+- Ép kiểu int
+- Kiểm tra khoảng:
+    1900 -> năm hiện tại
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+find_patient_index(records, patient_id)
+
+Input:
+- records (list)
+- patient_id (str)
+
+Output:
+- int
+
+Mô tả xử lý:
+- Duyệt danh sách
+- Kiểm tra startswith(patient_id)
+- Nếu tìm thấy:
+    return index
+- Không tìm thấy:
+    return -1
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+add_patient(records)
+
+Input:
+- records (list)
+
+Output:
+- None
+
+Mô tả xử lý:
+- Nhập thông tin bệnh nhân
+- Chuẩn hóa dữ liệu
+- Kiểm tra trùng mã
+- Kiểm tra năm sinh hợp lệ
+- join() tạo chuỗi hồ sơ
+- append() vào danh sách
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+update_diagnosis(records)
+
+Input:
+- records (list)
+
+Output:
+- None
+
+Mô tả xử lý:
+- Nhập mã bệnh nhân
+- Tìm index bệnh nhân
+- Nếu tồn tại:
+    + split("-")
+    + cập nhật chẩn đoán
+    + join() tạo chuỗi mới
+    + gán đè dữ liệu
+--------------------------------------------------
+
+--------------------------------------------------
+Tên hàm:
+generate_age_report(records)
+
+Input:
+- records (list)
+
+Output:
+- None
+
+Mô tả xử lý:
+- Duyệt danh sách
+- Tính tuổi:
+    tuổi = năm hiện tại - năm sinh
+- Phân loại:
+    + <16
+    + 16-60
+    + >60
+- Đếm số lượng từng nhóm
+--------------------------------------------------
+
+4. LUỒNG XỬ LÝ CHỨC NĂNG
+
+CHỨC NĂNG 1:
+- Hiển thị danh sách bệnh nhân
+
+CHỨC NĂNG 2:
+- Thêm bệnh nhân mới
+- Chuẩn hóa dữ liệu
+- Kiểm tra lỗi
+
+CHỨC NĂNG 3:
+- Cập nhật chẩn đoán
+- String immutable:
+    + split()
+    + sửa dữ liệu
+    + join()
+
+CHỨC NĂNG 4:
+- Tính tuổi
+- Phân loại độ tuổi
+
+CHỨC NĂNG 5:
+- Thoát chương trình
+
+5. EDGE CASES
+
+- Năm sinh chứa chữ
+- Năm sinh ngoài khoảng hợp lệ
+- Trùng mã bệnh nhân
+- Không tìm thấy mã bệnh nhân
+- Danh sách rỗng
+
+6. KỸ THUẬT ĐÃ SỬ DỤNG
+
+- split()
+- join()
+- replace()
+- title()
+- capitalize()
+- upper()
+- startswith()
+- append()
+- while True
+- match-case
+- Docstring
+- snake_case
+'''
+
+
 """
-PHÂN TÍCH & THIẾT KẾ GIẢI PHÁP
-
-1. find_patient_index(patients, er_id)
-- Input: list[str], str
-- Output: int
-- Duyệt danh sách, dùng startswith để tìm mã ER
-
-2. extract_vital_value(vital_string)
-- Input: str ("HR:115")
-- Output: float
-- Split ":" lấy phần số và ép kiểu float
-
-3. display_dashboard(patients)
-- Input: list[str]
-- Output: None
-- Split từng chuỗi và in bảng
-
-4. admit_patient(patients)
-- Input: list[str]
-- Output: None
-- Nhập dữ liệu, validate, chuẩn hóa, join và append
-
-5. update_vitals(patients)
-- Input: list[str]
-- Output: None
-- Split → sửa HR hoặc TEMP → join → gán lại
-
-6. trigger_red_alert(patients)
-- Input: list[str]
-- Output: None
-- Lọc HR > 100 hoặc TEMP >= 39
-
-7. discharge_patient(patients)
-- Input: list[str]
-- Output: None
-- Xóa bằng pop/remove
+Rikkei Hospital Management System
+- Manage patient medical records
+- Add and update patient diagnosis
+- Generate age classification report
 """
 
-patients = [
-    "ER01|Nguyen Van Quan|HR:115|TEMP:39.5",
-    "ER02|Tran Thi Binh|HR:80|TEMP:37.0",
-    "ER03|Le Van Cuong|HR:130|TEMP:38.2"
+from datetime import datetime
+
+# GLOBAL VARIABLES
+patient_records = [
+    "BN001-Nguyen Van A-1985-Viem Phoi",
+    "BN002-Tran Thi B-1990-Sot Xuat Huyet",
+    "BN003-Le Van C-2015-Viem Phe Quan"
 ]
 
 
-def find_patient_index(patients, er_id):
-    er_id = er_id.strip().upper()
-    for i, p in enumerate(patients):
-        if p.startswith(er_id + "|"):
-            return i
+# RECORD FUNCTIONS
+def split_record(record: str):
+    """
+    Tách hồ sơ bệnh án.
+
+    Args:
+        record (str):
+            Chuỗi hồ sơ bệnh án.
+
+    Returns:
+        list:
+            Danh sách dữ liệu đã tách.
+    """
+    return record.split("-")
+
+
+def display_records(records: list):
+    """
+    Hiển thị danh sách bệnh nhân.
+
+    Args:
+        records (list):
+            Danh sách hồ sơ bệnh án.
+
+    Returns:
+        None
+    """
+    if not records:
+        print("Hệ thống hiện chưa có hồ sơ nào.")
+        return
+
+    print("\n--- DANH SÁCH BỆNH NHÂN ---------------------------")
+
+    for index, record in enumerate(records, 1):
+
+        patient_id, name, birth_year, diagnosis = (
+            split_record(record)
+        )
+
+        print(
+            f"{index}. "
+            f"[{patient_id}] "
+            f"{name:<20} | "
+            f"Năm sinh: {birth_year} | "
+            f"Chẩn đoán: {diagnosis}"
+        )
+
+    print("--------------------------------------------------")
+
+
+# NORMALIZE FUNCTIONS
+def normalize_patient_id(patient_id: str):
+    """
+    Chuẩn hóa mã bệnh nhân.
+
+    Args:
+        patient_id (str):
+            Mã bệnh nhân.
+
+    Returns:
+        str:
+            Mã đã chuẩn hóa.
+    """
+    return patient_id.strip().upper().replace(" ", "")
+
+
+def normalize_name(name: str):
+    """
+    Chuẩn hóa tên bệnh nhân.
+
+    Args:
+        name (str):
+            Tên bệnh nhân.
+
+    Returns:
+        str:
+            Tên đã chuẩn hóa.
+    """
+    name = name.replace("-", " ")
+
+    return name.title()
+
+
+def normalize_diagnosis(diagnosis: str):
+    """
+    Chuẩn hóa chẩn đoán.
+
+    Args:
+        diagnosis (str):
+            Chuỗi chẩn đoán.
+
+    Returns:
+        str:
+            Chẩn đoán đã chuẩn hóa.
+    """
+    diagnosis = diagnosis.replace("-", " ")
+
+    return diagnosis.capitalize()
+
+
+# VALIDATION FUNCTIONS
+def is_valid_birth_year(year: str):
+    """
+    Kiểm tra năm sinh hợp lệ.
+
+    Args:
+        year (str):
+            Năm sinh.
+
+    Returns:
+        bool:
+            True nếu hợp lệ,
+            ngược lại False.
+    """
+    current_year = datetime.now().year
+
+    if not year.isdigit():
+        return False
+
+    year = int(year)
+
+    return 1900 <= year <= current_year
+
+
+def find_patient_index(records: list, patient_id: str):
+    """
+    Tìm vị trí bệnh nhân trong danh sách.
+
+    Args:
+        records (list):
+            Danh sách hồ sơ.
+
+        patient_id (str):
+            Mã bệnh nhân.
+
+    Returns:
+        int:
+            Index nếu tìm thấy,
+            ngược lại -1.
+    """
+    for index, record in enumerate(records):
+
+        if record.startswith(patient_id):
+            return index
+
     return -1
 
 
-def extract_vital_value(vital_string):
-    return float(vital_string.split(":")[1])
+# ADD FUNCTIONS
+def add_patient(records: list):
+    """
+    Thêm hồ sơ bệnh nhân mới.
 
+    Args:
+        records (list):
+            Danh sách hồ sơ bệnh án.
 
-def display_dashboard(patients):
-    if len(patients) == 0:
-        print("Khoa cấp cứu hiện đang trống.")
+    Returns:
+        None
+    """
+    print("\n--- THÊM HỒ SƠ BỆNH NHÂN MỚI ---")
+
+    patient_id = input(
+        "Nhập mã bệnh nhân: "
+    )
+
+    patient_id = normalize_patient_id(patient_id)
+
+    if find_patient_index(records, patient_id) != -1:
+        print("\nMã bệnh nhân đã tồn tại!")
         return
 
-    print("--- BẢNG THEO DÕI CA CẤP CỨU ---")
-
-    for i, p in enumerate(patients, 1):
-        er_id, name, hr, temp = p.split("|")
-
-        hr_val = hr.split(":")[1]
-        temp_val = temp.split(":")[1]
-
-        print(f"{i}. [{er_id}] {name} | Nhịp tim: {hr_val} bpm | Nhiệt độ: {temp_val} °C")
-
-    print("---------------------------------")
-
-
-def admit_patient(patients):
-    print("--- TIẾP NHẬN CA CẤP CỨU MỚI ---")
-
-    er_id = input("Nhập mã ER: ").strip().upper()
-    if len(er_id) == 0:
-        print("Mã ER không được để trống!")
-        return
-
-    if find_patient_index(patients, er_id) != -1:
-        print("Mã ca cấp cứu đã tồn tại!")
-        return
-
-    name = input("Nhập tên bệnh nhân: ").strip().title()
-    if len(name) == 0:
-        print("Tên bệnh nhân không được để trống!")
-        return
+    name = input("Nhập tên bệnh nhân: ")
+    name = normalize_name(name)
 
     while True:
-        hr = input("Nhập nhịp tim HR: ").strip()
-        if hr.isdigit() and int(hr) > 0:
-            hr = int(hr)
-            break
-        print("Sinh hiệu không hợp lệ, vui lòng nhập số lớn hơn 0!")
 
-    while True:
-        temp = input("Nhập nhiệt độ TEMP: ").strip()
-        if temp.replace(".", "", 1).isdigit() and float(temp) >= 36.5:
-            temp = float(temp)
-            break
-        print("Sinh hiệu không hợp lệ, vui lòng nhập >= 36.5!")
+        birth_year = input("Nhập năm sinh: ")
 
-    record = "|".join([
-        er_id,
+        if is_valid_birth_year(birth_year):
+            break
+
+        print(
+            "\nNăm sinh không hợp lệ, "
+            "vui lòng nhập lại!"
+        )
+
+    diagnosis = input("Nhập chẩn đoán: ")
+    diagnosis = normalize_diagnosis(diagnosis)
+
+    patient_data = [
+        patient_id,
         name,
-        f"HR:{hr}",
-        f"TEMP:{temp}"
-    ])
+        birth_year,
+        diagnosis
+    ]
 
-    patients.append(record)
+    record = "-".join(patient_data)
 
-    print("\nTiếp nhận ca cấp cứu mới thành công!")
+    records.append(record)
+
+    print("\nThêm hồ sơ bệnh nhân thành công!")
+
+    print("Sau khi chuẩn hóa, dữ liệu được lưu là:")
     print(record)
 
 
-def update_vitals(patients):
-    print("--- CẬP NHẬT LẠI SINH HIỆU ---")
+# UPDATE FUNCTIONS
+def update_diagnosis(records: list):
+    """
+    Cập nhật chẩn đoán bệnh nhân.
 
-    er_id = input("Nhập mã ER cần cập nhật: ").strip().upper()
-    idx = find_patient_index(patients, er_id)
+    Args:
+        records (list):
+            Danh sách hồ sơ bệnh án.
 
-    if idx == -1:
-        print("Không tìm thấy bệnh nhân. Vui lòng kiểm tra lại mã ER!")
+    Returns:
+        None
+    """
+    print("\n--- CẬP NHẬT CHẨN ĐOÁN THEO MÃ BN ---")
+
+    patient_id = input(
+        "Nhập mã bệnh nhân cần cập nhật: "
+    )
+
+    patient_id = normalize_patient_id(patient_id)
+
+    index = find_patient_index(records, patient_id)
+
+    if index == -1:
+
+        print(
+            f"\nKhông tìm thấy bệnh nhân "
+            f"mang mã {patient_id}!"
+        )
+
         return
 
-    parts = patients[idx].split("|")
+    parts = split_record(records[index])
 
-    print(f"Tìm thấy bệnh nhân: {parts[1]}")
-    print(f"Sinh hiệu hiện tại: {parts[2]} | {parts[3]}")
+    print(f"\nTìm thấy bệnh nhân: {parts[1]}")
+    print(f"Chẩn đoán hiện tại: {parts[3]}")
 
-    print("1. Nhịp tim HR")
-    print("2. Nhiệt độ TEMP")
+    new_diagnosis = input(
+        "Nhập chẩn đoán mới: "
+    )
 
-    choice = input("Chọn loại sinh hiệu: ").strip()
+    new_diagnosis = normalize_diagnosis(
+        new_diagnosis
+    )
 
-    if choice == "1":
-        while True:
-            new_hr = input("Nhập nhịp tim mới: ").strip()
-            if new_hr.isdigit() and int(new_hr) > 0:
-                parts[2] = f"HR:{int(new_hr)}"
-                break
-            print("Sinh hiệu không hợp lệ!")
+    parts[3] = new_diagnosis
 
-        print("Cập nhật nhịp tim thành công!")
+    updated_record = "-".join(parts)
 
-    elif choice == "2":
-        while True:
-            new_temp = input("Nhập nhiệt độ mới: ").strip()
-            if new_temp.replace(".", "", 1).isdigit() and float(new_temp) >= 36.5:
-                parts[3] = f"TEMP:{float(new_temp)}"
-                break
-            print("Sinh hiệu không hợp lệ!")
+    records[index] = updated_record
 
-        print("Cập nhật nhiệt độ thành công!")
+    print("\nCập nhật chẩn đoán thành công!")
 
-    else:
-        print("Lựa chọn không hợp lệ. Vui lòng chọn 1 hoặc 2!")
-        return
-
-    patients[idx] = "|".join(parts)
+    print("Dữ liệu mới được lưu:")
+    print(updated_record)
 
 
-def trigger_red_alert(patients):
-    print("!!! BÁO ĐỘNG ĐỎ !!!")
+# REPORT FUNCTIONS
+def generate_age_report(records: list):
+    """
+    Báo cáo phân loại theo độ tuổi.
 
-    danger_list = []
+    Args:
+        records (list):
+            Danh sách hồ sơ bệnh án.
 
-    for p in patients:
-        er_id, name, hr, temp = p.split("|")
+    Returns:
+        None
+    """
+    current_year = datetime.now().year
 
-        hr_val = extract_vital_value(hr)
-        temp_val = extract_vital_value(temp)
+    children = 0
+    adults = 0
+    seniors = 0
 
-        if hr_val > 100 or temp_val >= 39:
-            danger_list.append(p)
+    for record in records:
 
-    if len(danger_list) == 0:
-        print("Không có bệnh nhân nguy kịch.")
-        return
+        parts = split_record(record)
 
-    for i, p in enumerate(danger_list, 1):
-        er_id, name, hr, temp = p.split("|")
-        print(f"{i}. [{er_id}] {name} | {hr} | {temp} | CẦN XỬ LÝ KHẨN CẤP")
+        birth_year = int(parts[2])
 
-    print(f"Tổng số ca nguy kịch: {len(danger_list)}")
+        age = current_year - birth_year
 
+        if age < 16:
+            children += 1
 
-def discharge_patient(patients):
-    er_id = input("Nhập mã ER cần xóa: ").strip().upper()
+        elif age <= 60:
+            adults += 1
 
-    idx = find_patient_index(patients, er_id)
+        else:
+            seniors += 1
 
-    if idx == -1:
-        print("Không tìm thấy bệnh nhân. Vui lòng kiểm tra lại mã ER!")
-        return
+    print("\n--- BÁO CÁO PHÂN LOẠI THEO ĐỘ TUỔI ---")
 
-    name = patients[idx].split("|")[1]
-    patients.pop(idx)
+    print(f"Trẻ em: {children} bệnh nhân")
+    print(f"Trưởng thành: {adults} bệnh nhân")
+    print(f"Người cao tuổi: {seniors} bệnh nhân")
 
-    print(f"Đã chuyển khoa thành công cho bệnh nhân {name}!")
+    print("--------------------------------------")
 
 
+# MENU
 while True:
-    print("\n===== HỆ THỐNG QUẢN LÝ CẤP CỨU RIKKEI ER =====")
-    print("1. Bảng theo dõi bệnh nhân")
-    print("2. Tiếp nhận ca cấp cứu mới")
-    print("3. Cập nhật lại sinh hiệu")
-    print("4. BÁO ĐỘNG ĐỎ")
-    print("5. Xuất viện / Chuyển khoa")
-    print("6. Thoát")
-    print("================================================")
 
-    choice = input("Chọn chức năng (1-6): ").strip()
+    print("\n===== HỆ THỐNG QUẢN LÝ BỆNH ÁN RIKKEI HOSPITAL =====")
+    print("1. Xem danh sách hồ sơ bệnh án")
+    print("2. Thêm hồ sơ bệnh nhân mới")
+    print("3. Cập nhật chẩn đoán theo Mã BN")
+    print("4. Báo cáo phân loại theo độ tuổi")
+    print("5. Thoát chương trình")
+    print("===================================================")
+
+    choice = input("Chọn chức năng (1-5): ")
 
     match choice:
+
         case "1":
-            display_dashboard(patients)
+            display_records(patient_records)
+
         case "2":
-            admit_patient(patients)
+            add_patient(patient_records)
+
         case "3":
-            update_vitals(patients)
+            update_diagnosis(patient_records)
+
         case "4":
-            trigger_red_alert(patients)
+            generate_age_report(patient_records)
+
         case "5":
-            discharge_patient(patients)
-        case "6":
-            print("Kết thúc ca trực.")
+            print(
+                "Cảm ơn bác sĩ đã sử dụng hệ thống!"
+            )
+
             break
+
         case _:
             print("Lựa chọn không hợp lệ!")
+
+
